@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/models/tech_product_model.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/services/tech_product_service.dart';
 
@@ -87,6 +88,7 @@ class _mostrarProductos extends StatelessWidget {
         itemCount: productos.length,
         itemBuilder: (context, index) {
           return GestureDetector(
+            onTap: () => context.push('/detail',extra: productos[index]),
             child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
