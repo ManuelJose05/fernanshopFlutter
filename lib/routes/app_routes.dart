@@ -7,121 +7,139 @@ import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/onboa
 import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/product_detail.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/settings_screen.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/providers/config_provider.dart';
-import 'package:provider/provider.dart';
 
-final appRouter = GoRouter(
-  redirect: (context, state) {
-    final configProvider = Provider.of<ConfigProvider>(context);
-    if (configProvider.isPrimeraVez) return '/onboarding';
-    else return '/home';
-  },
-  routes: [
-    GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
-    GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen(),),
-    GoRoute(path: '/login', builder: (context, state) => LoginScreen(),),
-    GoRoute(
-      path: '/detail',
-      pageBuilder: (context, state) {
-        final producto = state.extra as TechProduct;
+class AppRouter {
+  final ConfigProvider configProvider;
 
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ProductDetail(producto: producto),
-          transitionDuration: const Duration(
-            milliseconds: 450,
-          ),
-          reverseTransitionDuration: const Duration(milliseconds: 400),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curvedAnimation = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutQuart,
-              reverseCurve: Curves.easeInQuart,
-            );
+  AppRouter(this.configProvider);
 
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation),
-              child: SlideTransition(
-                position:
-                    Tween<Offset>(
-                      begin: Offset.zero,
-                      end: const Offset(-0.3, 0.0),
-                    ).animate(
-                      CurvedAnimation(
-                        parent: secondaryAnimation,
-                        curve: Curves.easeOutQuart,
-                      ),
+  late final GoRouter router = GoRouter(
+    initialLocation: '/home',
+    // ESTA ES LA CLAVE: Hace que el router reaccione cuando cambia isPrimeraVez
+    refreshListenable: configProvider, 
+    
+    redirect: (context, state) {
+      final bool isPrimeraVez = configProvider.isPrimeraVez;
+      final bool yendoAlOnboarding = state.uri.toString() == '/onboarding';
+
+      // 1. Si es primera vez y NO estamos en onboarding -> Mandar a Onboarding
+      if (isPrimeraVez && !yendoAlOnboarding) {
+        return '/onboarding';
+      }
+
+      // 2. Si YA NO es primera vez y seguimos en onboarding -> Mandar a Home
+      if (!isPrimeraVez && yendoAlOnboarding) {
+        return '/home';
+      }
+
+      // Dejar pasar
+      return null;
+    },
+    
+    routes: [
+      GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
+      GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen()),
+      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+      
+      // TUS ANIMACIONES PERSONALIZADAS (INTACTAS)
+      GoRoute(
+        path: '/detail',
+        pageBuilder: (context, state) {
+          final producto = state.extra as TechProduct;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductDetail(producto: producto),
+            transitionDuration: const Duration(milliseconds: 450),
+            reverseTransitionDuration: const Duration(milliseconds: 400),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutQuart,
+                reverseCurve: Curves.easeInQuart,
+              );
+
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset.zero,
+                    end: const Offset(-0.3, 0.0),
+                  ).animate(
+                    CurvedAnimation(
+                      parent: secondaryAnimation,
+                      curve: Curves.easeOutQuart,
                     ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 20,
-                        offset: const Offset(-5, 0),
-                      ),
-                    ],
                   ),
-                  child: child,
-                ),
-              ),
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/settings',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: SettingsScreen(),
-          transitionDuration: const Duration(
-            milliseconds: 450,
-          ),
-          reverseTransitionDuration: const Duration(milliseconds: 400),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curvedAnimation = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutQuart,
-              reverseCurve: Curves.easeInQuart,
-            );
-
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation),
-              child: SlideTransition(
-                position:
-                    Tween<Offset>(
-                      begin: Offset.zero,
-                      end: const Offset(-0.3, 0.0),
-                    ).animate(
-                      CurvedAnimation(
-                        parent: secondaryAnimation,
-                        curve: Curves.easeOutQuart,
-                      ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 20,
+                          offset: const Offset(-5, 0),
+                        ),
+                      ],
                     ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 20,
-                        offset: const Offset(-5, 0),
-                      ),
-                    ],
+                    child: child,
                   ),
-                  child: child,
                 ),
-              ),
-            );
-          },
-        );
-      },
-    ),
-  ],
-);
+              );
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/settings',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: SettingsScreen(),
+            transitionDuration: const Duration(milliseconds: 450),
+            reverseTransitionDuration: const Duration(milliseconds: 400),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutQuart,
+                reverseCurve: Curves.easeInQuart,
+              );
+
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset.zero,
+                    end: const Offset(-0.3, 0.0),
+                  ).animate(
+                    CurvedAnimation(
+                      parent: secondaryAnimation,
+                      curve: Curves.easeOutQuart,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 20,
+                          offset: const Offset(-5, 0),
+                        ),
+                      ],
+                    ),
+                    child: child,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    ],
+  );
+}
