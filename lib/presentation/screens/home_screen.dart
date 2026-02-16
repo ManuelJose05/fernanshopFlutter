@@ -50,11 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             Divider(thickness: 2, color: Colors.grey[800]),
             FutureBuilder(
-              future: TechProductService().getAllProducts(), 
-              builder: (BuildContext context, AsyncSnapshot<List<TechProduct>> snapshot){
-                return snapshot.hasData ? _mostrarProductos(productos: snapshot.data!,) : Center(child: CircularProgressIndicator());
-              }
-            )
+              future: TechProductService().getAllProducts(),
+              builder:
+                  (
+                    BuildContext context,
+                    AsyncSnapshot<List<TechProduct>> snapshot,
+                  ) {
+                    return snapshot.hasData
+                        ? _mostrarProductos(productos: snapshot.data!)
+                        : Center(child: CircularProgressIndicator());
+                  },
+            ),
           ],
         ),
       ),
@@ -69,9 +75,38 @@ class _mostrarProductos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: gridDelegate, 
-      itemBuilder: itemBuilder
-    )
+    return Expanded(
+      child: GridView.builder(
+        padding: EdgeInsets.all(10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: productos.length,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadiusGeometry.circular(20)
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(20),
+                    child: Image(image: NetworkImage(productos[index].imageUrl)),
+                  ),
+                ),
+                Text('${productos[index].business} ${productos[index].name}', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),textAlign: TextAlign.start,),
+                Text('${productos[index].price.toString()}€',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),textAlign: TextAlign.end,)
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
