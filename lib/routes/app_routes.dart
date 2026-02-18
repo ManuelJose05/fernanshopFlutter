@@ -18,41 +18,7 @@ class AppRouter {
   AppRouter(this.configProvider, this.usersProvider);
 
   late final GoRouter router = GoRouter(
-    initialLocation: '/login',
-    refreshListenable: configProvider,
-
-    redirect: (context, state) {
-      final bool isPrimeraVez = configProvider.isPrimeraVez;
-      final Users? usuarioLogueado = usersProvider.userLogued;
-      final String path = state.uri.path;
-
-      if (isPrimeraVez) {
-        return path == '/onboarding' ? null : '/onboarding';
-      }
-
-      if (usuarioLogueado == null && configProvider.enPantallaRegistro){
-        return '/signup';
-      }
-
-      if (usuarioLogueado == null) {
-
-        if (path == '/onboarding') return '/login';
-        if (path == '/login' || path =='/signup') {
-          return null;
-        }
-
-        return '/login';
-      }
-
-      if (usuarioLogueado != null) {
-        if (path == '/login' || path == '/signup' || path == '/onboarding') {
-          return '/home';
-        }
-        return null;
-      }
-
-      return null;
-    },
+    initialLocation: configProvider.isPrimeraVez ? '/onboarding' : usersProvider.userLogued != null ? '/home': configProvider.enPantallaRegistro ? '/signup' : '/login',
 
     routes: [
       GoRoute(path: '/home', builder: (context, state){

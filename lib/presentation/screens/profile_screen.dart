@@ -21,8 +21,9 @@ class ProfileScreen extends StatelessWidget {
               Icon(Icons.person, size: 180),
               Text(
                 'Bienvenido, ${user.name}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
+              SizedBox(height: 10,),
               !user.administrator! ? 
               Text('⚠️Usted no es un administrador',style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)) 
               : Text('✅Usted es administrador',style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
