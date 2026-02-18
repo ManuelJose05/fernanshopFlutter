@@ -13,6 +13,7 @@ class ProductsProvider with ChangeNotifier {
 
   void aniadirProductoCarro(TechProduct product) async {
     productosEnCarro.add(product);
+    //Guardamos en disco
     final listaDeMapas = productosEnCarro
         .map((producto) => producto.toJson())
         .toList();
@@ -43,8 +44,15 @@ class ProductsProvider with ChangeNotifier {
     return precioTotal.toStringAsFixed(2);
   }
 
-  void eliminarProductoCarroIndex(int index) {
+  void eliminarProductoCarroIndex(int index)async{
     productosEnCarro.removeAt(index);
+    //Guardamos en disco
+    final listaDeMapas = productosEnCarro
+        .map((producto) => producto.toJson())
+        .toList();
+    String jsonCarro = jsonEncode(listaDeMapas);
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString('carro', jsonCarro);
     notifyListeners();
   }
 }

@@ -7,9 +7,9 @@ import 'package:practica_obligatoria_tema5_fernanshop/services/users_service.dar
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatelessWidget {
-SignupScreen({super.key});
-final GlobalKey<FormState> _keyFormulario = GlobalKey<FormState>();
-final TextEditingController nameController = TextEditingController();
+  SignupScreen({super.key});
+  final GlobalKey<FormState> _keyFormulario = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   @override
@@ -20,7 +20,6 @@ final TextEditingController nameController = TextEditingController();
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            
             child: Column(
               children: [
                 SizedBox(height: 60),
@@ -44,7 +43,9 @@ final TextEditingController nameController = TextEditingController();
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[900] : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[900]
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -64,7 +65,7 @@ final TextEditingController nameController = TextEditingController();
                           label: 'Nombre de usuario',
                           icon: Icons.person,
                           keyboardType: TextInputType.name,
-                          context: context
+                          context: context,
                         ),
                         const SizedBox(height: 20),
                         _buildCustomInput(
@@ -72,7 +73,7 @@ final TextEditingController nameController = TextEditingController();
                           label: 'Correo Electrónico',
                           icon: Icons.alternate_email_rounded,
                           keyboardType: TextInputType.emailAddress,
-                          context: context
+                          context: context,
                         ),
                         const SizedBox(height: 20),
                         _buildCustomInput(
@@ -80,7 +81,7 @@ final TextEditingController nameController = TextEditingController();
                           label: 'Contraseña',
                           icon: Icons.lock_outline_rounded,
                           isPassword: true,
-                          context: context
+                          context: context,
                         ),
                       ],
                     ),
@@ -97,7 +98,7 @@ final TextEditingController nameController = TextEditingController();
                           emailController.text,
                           passController.text,
                           usersProvider,
-                          context
+                          context,
                         );
                       }
                     },
@@ -115,20 +116,69 @@ final TextEditingController nameController = TextEditingController();
                   ),
                 ),
                 SizedBox(height: 15),
-                TextButton(onPressed: (){
-                  configProvider.deshabilitarEnSignup();
-                }, child: Text('¿Tiene una cuenta? Inicie sesión')),
+                TextButton(
+                  onPressed: () {
+                    configProvider.deshabilitarEnSignup();
+                  },
+                  child: Text('¿Tiene una cuenta? Inicie sesión'),
+                ),
                 if (usersProvider.isLoading)
-                  const Center(child: CircularProgressIndicator())
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else if (usersProvider.registerFailed)
-                  const Center(
-                    child: Text(
-                      'Revise los terminos introducidos y vuelva a intentarlo: La contraseña debe tener 5 carácteres como mínimo',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 15,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red[200]!),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start, // Alinea el icono arriba si el texto es largo
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.red[700],
+                          size: 22,
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Error en el registro',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'La contraseña debe tener al menos 5 caracteres y el formato del correo debe ser válido.',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  height:
+                                      1.3, // Mejora la legibilidad de la frase larga
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -151,9 +201,10 @@ final TextEditingController nameController = TextEditingController();
       email,
       pass,
     );
-    if (userFromRequest != null){
+    if (userFromRequest != null) {
       usersProvider.confirmarLogueo(userFromRequest);
-    }else usersProvider.confirmarRegistroInvalido();
+    } else
+      usersProvider.confirmarRegistroInvalido();
   }
 }
 
@@ -172,9 +223,7 @@ Widget _buildCustomInput({
     obscureText: isPassword,
     keyboardType: keyboardType,
     cursorColor: Colors.indigo,
-    style: TextStyle(
-      color: isDark ? Colors.white : Colors.black87,
-    ),
+    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
     validator: (value) {
       if (value == null || value.isEmpty) {
         return 'Este campo es obligatorio';

@@ -42,7 +42,9 @@ class LoginScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[900] : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[900]
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -62,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                           label: 'Correo Electrónico',
                           icon: Icons.alternate_email_rounded,
                           keyboardType: TextInputType.emailAddress,
-                          context: context
+                          context: context,
                         ),
                         const SizedBox(height: 20),
                         _buildCustomInput(
@@ -70,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                           label: 'Contraseña',
                           icon: Icons.lock_outline_rounded,
                           isPassword: true,
-                          context: context
+                          context: context,
                         ),
                       ],
                     ),
@@ -86,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                           emailController.text,
                           passController.text,
                           usersProvider,
-                          context
+                          context,
                         );
                       }
                     },
@@ -104,21 +106,52 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 15),
-                TextButton(onPressed: (){
-                  configProvider.habilitarEnSignup();
-                  context.push('/signup');
-                }, child: Text('¿Sin cuenta? Regístrese')),
+                TextButton(
+                  onPressed: () {
+                    configProvider.habilitarEnSignup();
+                    context.go('/signup');
+                  },
+                  child: Text('¿Sin cuenta? Regístrese'),
+                ),
                 if (usersProvider.isLoading)
-                  const Center(child: CircularProgressIndicator())
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else if (usersProvider.loginFailed)
-                  const Center(
-                    child: Text(
-                      'Usuario o contraseña incorrectos',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 15,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50], // Fondo suave
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          color: Colors.red[700],
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Credenciales incorrectas. Revisa tu email y contraseña.',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -139,9 +172,10 @@ class LoginScreen extends StatelessWidget {
       email,
       pass,
     );
-    if (userFromRequest != null){
+    if (userFromRequest != null) {
       usersProvider.confirmarLogueo(userFromRequest);
-    }else usersProvider.confirmarLogueoInvalido();
+    } else
+      usersProvider.confirmarLogueoInvalido();
   }
 }
 
@@ -160,9 +194,7 @@ Widget _buildCustomInput({
     obscureText: isPassword,
     keyboardType: keyboardType,
     cursorColor: Colors.indigo,
-    style: TextStyle(
-      color: isDark ? Colors.white : Colors.black87,
-    ),
+    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
     validator: (value) {
       if (value == null || value.isEmpty) {
         return 'Este campo es obligatorio';

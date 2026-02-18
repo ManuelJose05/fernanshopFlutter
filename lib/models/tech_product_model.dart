@@ -107,6 +107,15 @@ class Characteristics {
     this.modular,
   });
 
+  bool get hasData {
+    return [
+      speed, maxSpeed, voltage, memory, boostClock, tdp, socket, 
+      chipset, formFactor, type, characteristicsInterface, speedRead, 
+      speedWrite, rpm, cache, fans, noise, height, fan, wattage, 
+      efficiency, modular
+    ].any((v) => v != null && v.toString().trim().isNotEmpty);
+  }
+
   factory Characteristics.fromJson(Map<String, dynamic> json) => Characteristics(
         speed: json["speed"],
         maxSpeed: json["max_speed"],
