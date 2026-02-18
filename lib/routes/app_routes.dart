@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/models/tech_product_model.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/models/users_model.dart';
+import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/actualizacion_producto.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/home_screen.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/login_screen.dart';
 import 'package:practica_obligatoria_tema5_fernanshop/presentation/screens/onboarding_screen.dart';
@@ -54,6 +55,11 @@ class AppRouter {
         pageBuilder: (context, state) =>
             _buildTransition(state: state, child: SettingsScreen()),
       ),
+      GoRoute(path: '/editarProducto',
+      builder: (context,state){
+        final producto = state.extra as TechProduct;
+        return ActualizacionProducto(producto: producto);
+      })
     ],
   );
 

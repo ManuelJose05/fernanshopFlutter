@@ -155,9 +155,7 @@ class _botonEditarProducto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        
-      },
+      onPressed: ()=> context.push('/editarProducto',extra: producto),
     
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
